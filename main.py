@@ -67,7 +67,8 @@ if __name__ == '__main__':
     dataloader = scn.load(
                 with_pytorch="dataloaders",
                 batch_size=config.batch, 
-                dynamic_batching=False)
+                dynamic_batching=False,
+                scn_dir='./sidechainnet_data')
     if config.train:
         main(config, dataloader)
     else:
