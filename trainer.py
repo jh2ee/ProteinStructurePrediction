@@ -15,12 +15,12 @@ def validation(model, datasplit, device, loss_fn, mode):
             # Prepare variables and create a mask of missing angles (padded with zeros)
             # The mask is repeated in the last dimension to match the sin/cos represenation.
             if mode == 'seqs':
-                seqs = batch.int_seqs.to(device).long()
+                seqs = batch.seqs_int.to(device).long()
             elif mode == 'pssms':
                 seqs = batch.seq_evo_sec.to(device)
-            mask_ = batch.msks.to(device)
-            true_angles_sincosine = scn.structure.trig_transform(batch.angs).to(device)
-            mask = (batch.angs.ne(0)).unsqueeze(-1).repeat(1, 1, 1, 2)
+            mask_ = batch.masks.to(device)
+            true_angles_sincosine = scn.structure.trig_transform(batch.angles).to(device)
+            mask = (batch.angles.ne(0)).unsqueeze(-1).repeat(1, 1, 1, 2)
 
             # Make predictions and optimize
             predicted_angles = model(seqs, mask = mask_)
@@ -40,12 +40,12 @@ def train(model, config, dataloader, device):
             # Prepare variables and create a mask of missing angles (padded with zeros)
             # Note the mask is repeated in the last dimension to match the sin/cos represenation.
             if config.mode == 'seqs':
-                seqs = batch.int_seqs.to(device).long()
+                seqs = batch.seqs_int.to(device).long()
             elif config.mode == 'pssms':
                 seqs = batch.seq_evo_sec.to(device)
-            mask_ = batch.msks.to(device)
-            true_angles_sincos = scn.structure.trig_transform(batch.angs).to(device)
-            mask = (batch.angs.ne(0)).unsqueeze(-1).repeat(1, 1, 1, 2)
+            mask_ = batch.masks.to(device)
+            true_angles_sincos = scn.structure.trig_transform(batch.angles).to(device)
+            mask = (batch.angles.ne(0)).unsqueeze(-1).repeat(1, 1, 1, 2)
 
             # Make predictions and optimize
             predicted_angles = model(seqs, mask = mask_)
